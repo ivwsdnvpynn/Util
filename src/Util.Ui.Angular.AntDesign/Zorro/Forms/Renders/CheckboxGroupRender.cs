@@ -2,12 +2,13 @@
 using Util.Helpers;
 using Util.Ui.Angular;
 using Util.Ui.Angular.Base;
-using Util.Ui.Angular.Forms.Resolvers;
+using Util.Ui.Angular.Resolvers;
 using Util.Ui.Builders;
 using Util.Ui.Configs;
 using Util.Ui.Extensions;
 using Util.Ui.Zorro.Forms.Builders;
 using Util.Ui.Zorro.Forms.Configs;
+using Util.Ui.Zorro.Forms.Helpers;
 
 namespace Util.Ui.Zorro.Forms.Renders {
     /// <summary>
@@ -34,7 +35,7 @@ namespace Util.Ui.Zorro.Forms.Renders {
             ResolveExpression();
             var builder = new CheckboxGroupWrapperBuilder();
             Config( builder );
-            return builder;
+            return FormHelper.CreateFormItemBuilder( _config, builder );
         }
 
         /// <summary>
@@ -80,8 +81,7 @@ namespace Util.Ui.Zorro.Forms.Renders {
         /// 配置模型绑定
         /// </summary>
         private void ConfigModel( TagBuilder builder ) {
-            builder.AddAttribute( "[(model)]", _config.GetValue( UiConst.Model ) );
-            builder.AddAttribute( "[(model)]", _config.GetValue( AngularConst.NgModel ) );
+            builder.NgModel( _config );
         }
 
         /// <summary>
@@ -112,20 +112,20 @@ namespace Util.Ui.Zorro.Forms.Renders {
         /// </summary>
         private void ConfigDataSource( TagBuilder builder ) {
             AddDataSource();
-            builder.AddAttribute( "[dataSource]", _config.GetValue( AngularConst.BindDataSource ) );
+            builder.AddAttribute( "[dataSource]", _config.GetValue( AngularConst.BindData ) );
         }
 
         /// <summary>
         /// 添加项集合
         /// </summary>
         private void AddDataSource() {
-            var expression = _config.GetValue<ModelExpression>( UiConst.DataSource );
+            var expression = _config.GetValue<ModelExpression>( UiConst.Data );
             if ( expression == null )
                 return;
             AddItems( expression );
             if( _config.Items.Count == 0 )
                 return;
-            _config.SetAttribute( AngularConst.BindDataSource, Util.Helpers.Json.ToJson( _config.Items, true ) );
+            _config.SetAttribute( AngularConst.BindData, Util.Helpers.Json.ToJson( _config.Items, true ) );
         }
 
         /// <summary>

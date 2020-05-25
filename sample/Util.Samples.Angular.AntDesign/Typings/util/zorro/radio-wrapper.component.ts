@@ -2,7 +2,7 @@
 //Copyright 2019 何镇汐
 //Licensed under the MIT license
 //=======================================================
-import { Component, Input, Output, EventEmitter, OnInit, Host, Optional, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, Optional, ViewChild, AfterViewInit } from '@angular/core';
 import { NgModel,NgForm } from '@angular/forms';
 import { SelectList, SelectItem, SelectOption } from "../core/select-model";
 import { WebApi as webapi } from '../common/webapi';
@@ -13,17 +13,24 @@ import { WebApi as webapi } from '../common/webapi';
 @Component({
     selector: 'x-radio',
     template:`
-        <nz-radio-group #controlModel="ngModel" [nzName]="name" [ngModel]="model" (ngModelChange)="onModelChange($event)" [nzDisabled]="disabled" [required]="required">
+    <nz-form-control>
+        <nz-radio-group #controlModel="ngModel" [name]="name" [nzName]="name" [ngModel]="model" (ngModelChange)="onModelChange($event)" 
+            [nzDisabled]="disabled" [required]="required" [nzButtonStyle]="'solid'">
             <label nz-radio *ngFor="let item of dataSource" [nzValue]="item.value" [nzDisabled]="item.disabled" 
                    [ngStyle]="vertical?verticalStyle:''">
             {{ item.text }}
             </label>
         </nz-radio-group>
+    </nz-form-control>
     `,
     styles: [`
     `]
 })
 export class Radio implements OnInit, AfterViewInit {
+    /**
+     * id
+     */
+    @Input() rawId: string;
     /**
      * 名称
      */
@@ -32,6 +39,10 @@ export class Radio implements OnInit, AfterViewInit {
      * 是否垂直布局
      */
     @Input() vertical: boolean;
+    /**
+     * 风格样式，可选值：'outline' | 'solid'
+     */
+    @Input() buttonStyle: string;
     /**
      * 是否显示标签
      */
@@ -71,13 +82,14 @@ export class Radio implements OnInit, AfterViewInit {
     /**
      * 控件模型
      */
-    @ViewChild('controlModel') controlModel: NgModel;
+    @ViewChild( 'controlModel', { "static": false }) controlModel: NgModel;
 
     /**
      * 初始化单选按钮包装器
      */
-    constructor( @Optional() @Host() private form: NgForm) {
+    constructor( @Optional() private form: NgForm) {
         this.showLabel = true;
+        this.buttonStyle = 'outline';
     }
 
     /**

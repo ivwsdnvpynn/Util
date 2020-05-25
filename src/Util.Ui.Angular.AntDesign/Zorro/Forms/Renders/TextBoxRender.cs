@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Util.Ui.Angular.Forms.Configs;
-using Util.Ui.Angular.Forms.Resolvers;
+using Util.Ui.Angular.Resolvers;
 using Util.Ui.Builders;
 using Util.Ui.Configs;
 using Util.Ui.Enums;
-using Util.Ui.Zorro.Enums;
 using Util.Ui.Zorro.Forms.Base;
 using Util.Ui.Zorro.Forms.Builders;
 
@@ -32,12 +31,13 @@ namespace Util.Ui.Zorro.Forms.Renders {
         protected override TagBuilder GetTagBuilder() {
             ResolveExpression();
             var builder = CreateBuilder();
-            base.Config( builder );
+            Config( builder );
             ConfigTextArea( builder );
             ConfigDatePicker( builder );
+            ConfigNumber( builder );
             ConfigTextBox( builder );
             ConfigStandalone( builder );
-            return builder;
+            return GetFormItemBuilder( builder );
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace Util.Ui.Zorro.Forms.Renders {
             if( _config.Contains( UiConst.For ) == false )
                 return;
             var expression = _config.GetValue<ModelExpression>( UiConst.For );
-            TextBoxExpressionResolver.Init( expression, _config );
+            TextBoxExpressionResolver.Init( expression, _config, IsTableEdit() );
         }
 
         /// <summary>
@@ -58,6 +58,8 @@ namespace Util.Ui.Zorro.Forms.Renders {
                 return new TextAreaWrapperBuilder();
             if( _config.IsDatePicker )
                 return new DatePickerWrapperBuilder();
+            if( _config.IsNumber )
+                return new NumberTextBoxWrapperBuilder();
             return new TextBoxWrapperBuilder();
         }
 
@@ -77,36 +79,26 @@ namespace Util.Ui.Zorro.Forms.Renders {
         private void ConfigDatePicker( TagBuilder builder ) {
             if( _config.IsDatePicker == false )
                 return;
-            ConfigDatePickerType( builder );
-            ConfigDateFormat( builder );
-            ConfigShowTime( builder );
+            var render = new DatePickerRender( _config, builder );
+            render.Config();
         }
 
         /// <summary>
-        /// 配置日期选择器类型
+        /// 配置数字框
         /// </summary>
-        private void ConfigDatePickerType( TagBuilder builder ) {
-            builder.AddAttribute( "type", _config.GetValue<DatePickerType?>( UiConst.Type ).Description() );
-        }
-
-        /// <summary>
-        /// 配置日期格式化
-        /// </summary>
-        private void ConfigDateFormat( TagBuilder builder ) {
-            builder.AddAttribute( "format", _config.GetValue( UiConst.Format ) );
-        }
-
-        /// <summary>
-        /// 配置显示时间
-        /// </summary>
-        private void ConfigShowTime( TagBuilder builder ) {
-            builder.AddAttribute( "showTime", _config.GetBoolValue( UiConst.ShowTime ) );
+        private void ConfigNumber( TagBuilder builder ) {
+            if( _config.IsNumber == false )
+                return;
+            var render = new NumberTextBoxRender( _config, builder );
+            render.Config();
         }
 
         /// <summary>
         /// 配置文本框
         /// </summary>
         private void ConfigTextBox( TagBuilder builder ) {
+            if( _config.IsNumber )
+                return;
             ConfigType( builder );
             ConfigReadOnly( builder );
             ConfigValidations( builder );
@@ -117,7 +109,7 @@ namespace Util.Ui.Zorro.Forms.Renders {
         /// </summary>
         private void ConfigType( TagBuilder builder ) {
             var type = _config.GetValue<TextBoxType?>( UiConst.Type );
-            if ( type == TextBoxType.Number )
+            if( type == TextBoxType.Number )
                 return;
             builder.AddAttribute( UiConst.Type, type?.Description() );
         }
@@ -136,8 +128,6 @@ namespace Util.Ui.Zorro.Forms.Renders {
             ConfigEmail( builder );
             ConfigMinLength( builder );
             ConfigMaxLength( builder );
-            ConfigMin( builder );
-            ConfigMax( builder );
             ConfigRegex( builder );
         }
 
@@ -161,22 +151,6 @@ namespace Util.Ui.Zorro.Forms.Renders {
         /// </summary>
         private void ConfigMaxLength( TagBuilder builder ) {
             builder.AddAttribute( "[maxLength]", _config.GetValue( UiConst.MaxLength ) );
-        }
-
-        /// <summary>
-        /// 配置最小值验证
-        /// </summary>
-        private void ConfigMin( TagBuilder builder ) {
-            builder.AddAttribute( "[min]", _config.GetValue( UiConst.Min ) );
-            builder.AddAttribute( "minMessage", _config.GetValue( UiConst.MinMessage ) );
-        }
-
-        /// <summary>
-        /// 配置最大值验证
-        /// </summary>
-        private void ConfigMax( TagBuilder builder ) {
-            builder.AddAttribute( "[max]", _config.GetValue( UiConst.Max ) );
-            builder.AddAttribute( "maxMessage", _config.GetValue( UiConst.MaxMessage ) );
         }
 
         /// <summary>

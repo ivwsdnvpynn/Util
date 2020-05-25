@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 using Util.Ui.Angular.AntDesign.Tests.XUnitHelpers;
 using Util.Ui.Configs;
+using Util.Ui.Enums;
 using Util.Ui.Zorro.Forms;
 using Xunit;
 using Xunit.Abstractions;
@@ -65,6 +66,17 @@ namespace Util.Ui.Angular.AntDesign.Tests.Zorro.Forms {
             var attributes = new TagHelperAttributeList { { UiConst.Name, "a" } };
             var result = new String();
             result.Append( "<x-radio name=\"a\"></x-radio>" );
+            Assert.Equal( result.ToString(), GetResult( attributes ) );
+        }
+
+        /// <summary>
+        /// 测试按钮样式
+        /// </summary>
+        [Fact]
+        public void TestButtonStyle() {
+            var attributes = new TagHelperAttributeList { { UiConst.ButtonStyle, RadioButtonStyle.Solid } };
+            var result = new String();
+            result.Append( "<x-radio buttonStyle=\"solid\"></x-radio>" );
             Assert.Equal( result.ToString(), GetResult( attributes ) );
         }
 
@@ -139,7 +151,7 @@ namespace Util.Ui.Angular.AntDesign.Tests.Zorro.Forms {
         /// </summary>
         [Fact]
         public void TestDataSource() {
-            var attributes = new TagHelperAttributeList { { UiConst.DataSource, "a" } };
+            var attributes = new TagHelperAttributeList { { UiConst.Data, "a" } };
             var result = new String();
             result.Append( "<x-radio [dataSource]=\"a\"></x-radio>" );
             Assert.Equal( result.ToString(), GetResult( attributes ) );
@@ -164,6 +176,19 @@ namespace Util.Ui.Angular.AntDesign.Tests.Zorro.Forms {
             var attributes = new TagHelperAttributeList { { UiConst.Required, true } };
             var result = new String();
             result.Append( "<x-radio [required]=\"true\"></x-radio>" );
+            Assert.Equal( result.ToString(), GetResult( attributes ) );
+        }
+
+        /// <summary>
+        /// 测试栅格跨度
+        /// </summary>
+        [Fact]
+        public void TestSpan() {
+            var attributes = new TagHelperAttributeList { { UiConst.Span, 2 } };
+            var result = new String();
+            result.Append( "<nz-form-control [nzSpan]=\"2\">" );
+            result.Append( "<x-radio></x-radio>" );
+            result.Append( "</nz-form-control>" );
             Assert.Equal( result.ToString(), GetResult( attributes ) );
         }
 

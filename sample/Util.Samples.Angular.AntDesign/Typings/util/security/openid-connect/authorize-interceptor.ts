@@ -1,14 +1,12 @@
 ﻿//============== OpenId Connect授权拦截器 ========
-//Copyright 2018 何镇汐
+//Copyright 2019 何镇汐
 //Licensed under the MIT license
 //================================================
 import { Injectable } from '@angular/core';
 import { HttpRequest, HttpInterceptor, HttpHandler } from '@angular/common/http';
 import { AuthorizeService } from './authorize-service';
-import { Observable } from 'rxjs';
-import 'rxjs-compat/add/observable/fromPromise';
-import "rxjs-compat/add/operator/map";
-import "rxjs-compat/add/operator/mergeMap";
+import { from, throwError } from 'rxjs';
+import { map, mergeMap, catchError } from "rxjs/operators";
 
 /**
  * OpenId Connect授权拦截器
@@ -28,12 +26,21 @@ export class AuthorizeInterceptor implements HttpInterceptor {
      * @param next Http处理器
      */
     intercept( request: HttpRequest<any>, next: HttpHandler ) {
-        return Observable.fromPromise( this.auth.getUser() ).map( user => {
-            if ( !user || !user.access_token )
-                return request;
-            return request.clone( {
-                setHeaders: { Authorization: `${user.token_type} ${user.access_token}` }
-            } );
-        } ).mergeMap( authRequest => next.handle( authRequest ) );
+        return from( this.auth.getUser() ).pipe(
+            map( user => {
+                if ( !user || !user.access_token )
+                    return request;
+
+                return request.clone( {
+                    setHeaders: { Authorization: `${user.token_type} ${user.access_token}` }
+                } );
+            } ),
+            mergeMap( authRequest => next.handle( authRequest ) ),
+            catchError( res => {
+                if ( res.status === 401 )
+                    this.auth.login();
+                return throwError( res );
+            } )
+        );
     }
 }

@@ -4,7 +4,7 @@
 //================================================
 import { ViewChild, forwardRef, Injector } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { util } from '../index';
+import { Util as util } from "../util";
 
 /**
  * 表单编辑组件基类
@@ -17,7 +17,7 @@ export abstract class FormComponentBase {
     /**
      * 表单
      */
-    @ViewChild( forwardRef( () => NgForm ) ) protected form: NgForm;
+    @ViewChild( forwardRef( () => NgForm ), { "static": false } ) protected form: NgForm;
 
     /**
      * 初始化

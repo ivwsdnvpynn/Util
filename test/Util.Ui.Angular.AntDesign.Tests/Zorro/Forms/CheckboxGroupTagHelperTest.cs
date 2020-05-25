@@ -106,7 +106,7 @@ namespace Util.Ui.Angular.AntDesign.Tests.Zorro.Forms {
         /// </summary>
         [Fact]
         public void TestBindDataSource() {
-            var attributes = new TagHelperAttributeList { { AngularConst.BindDataSource, "a" } };
+            var attributes = new TagHelperAttributeList { { AngularConst.BindData, "a" } };
             var result = new String();
             result.Append( "<x-checkbox-group [dataSource]=\"a\"></x-checkbox-group>" );
             Assert.Equal( result.ToString(), GetResult( attributes ) );
@@ -142,6 +142,19 @@ namespace Util.Ui.Angular.AntDesign.Tests.Zorro.Forms {
             var attributes = new TagHelperAttributeList { { UiConst.RequiredMessage, "a" } };
             var result = new String();
             result.Append( "<x-checkbox-group requiredMessage=\"a\"></x-checkbox-group>" );
+            Assert.Equal( result.ToString(), GetResult( attributes ) );
+        }
+
+        /// <summary>
+        /// 测试栅格跨度
+        /// </summary>
+        [Fact]
+        public void TestSpan() {
+            var attributes = new TagHelperAttributeList { { UiConst.Span, 2 } };
+            var result = new String();
+            result.Append( "<nz-form-control [nzSpan]=\"2\">" );
+            result.Append( "<x-checkbox-group></x-checkbox-group>" );
+            result.Append( "</nz-form-control>" );
             Assert.Equal( result.ToString(), GetResult( attributes ) );
         }
 

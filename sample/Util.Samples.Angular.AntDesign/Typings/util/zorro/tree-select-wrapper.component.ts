@@ -2,7 +2,7 @@
 //Copyright 2019 何镇汐
 //Licensed under the MIT license
 //=======================================================
-import { Component, Input, Output, AfterContentInit, EventEmitter, Host, Optional } from '@angular/core';
+import { Component, Input, Output, AfterContentInit, EventEmitter, Optional } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { NzTreeNodeOptions, NzFormatEmitEvent } from "ng-zorro-antd";
 import { FormControlWrapperBase } from './base/form-control-wrapper-base';
@@ -18,7 +18,7 @@ import { TreeQueryParameter } from "../core/tree-model";
         <nz-form-control [nzValidateStatus]="(controlModel?.hasError( 'required' ) && (controlModel?.dirty || controlModel.touched))?'error':'success'">
             <nz-tree-select #controlModel="ngModel" [name]="name" [ngModel]="model" (ngModelChange)="onModelChange($event)" 
                 [ngStyle]="getStyle()" [nzPlaceHolder]="placeholder" [nzNodes]="dataSource" [nzAsyncData]="async" [nzCheckable]="showCheckbox"
-                [nzShowExpand]="showExpand" [nzShowLine]="showLine" [nzDefaultExpandAll]="expandAll" [nzDefaultExpandedKeys]="expandedKeys"
+                [nzShowExpand]="showExpand" [nzShowLine]="showLine" [nzDefaultExpandAll]="expandAll" [nzExpandedKeys]="expandedKeys"
                 [nzMultiple]="multiple" [required]="required" [nzDisabled]="disabled"
                 (nzExpandChange)="expandChange($event)">
             </nz-tree-select>
@@ -95,7 +95,7 @@ export class TreeSelect extends FormControlWrapperBase implements AfterContentIn
     /**
      * 初始化树形选择包装器
      */
-    constructor( @Optional() @Host() form: NgForm ) {
+    constructor( @Optional() form: NgForm ) {
         super( form );
         this.dataSource = new Array<any>();
         this.autoLoad = true;

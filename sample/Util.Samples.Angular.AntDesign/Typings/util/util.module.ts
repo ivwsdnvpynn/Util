@@ -18,10 +18,6 @@ import { ViserModule } from 'viser-ng';
 import { DicService } from './services/dic.service';
 import { Session } from './security/session';
 
-//Util指令
-import { MinValidator } from './directives/min-validator.directive';
-import { MaxValidator } from './directives/max-validator.directive';
-
 //Util管道
 import { SafeUrlPipe } from './pipes/safe-url.pipe';
 import { TruncatePipe } from "./pipes/truncate.pipe";
@@ -46,14 +42,21 @@ import { Button } from "./zorro/button-wrapper.component";
 import { TextBox } from "./zorro/textbox-wrapper.component";
 import { DatePicker } from "./zorro/datepicker-wrapper.component";
 import { TextArea } from "./zorro/textarea-wrapper.component";
+import { NumberTextBox } from "./zorro/number-textbox-wrapper.component";
 import { Select } from "./zorro/select-wrapper.component";
 import { Radio } from "./zorro/radio-wrapper.component";
 import { CheckboxGroup } from "./zorro/checkbox-group-wrapper.component";
 import { Table } from "./zorro/table-wrapper.component";
 import { Upload } from "./zorro/upload-wrapper.component";
+import { SingleUpload } from "./zorro/single-upload-wrapper.component";
 import { Tree } from "./zorro/tree-wrapper.component";
 import { TreeSelect } from "./zorro/tree-select-wrapper.component";
 import { TreeTable } from "./zorro/tree-table-wrapper.component";
+
+//Util指令
+import { EditTableDirective } from "./zorro/edit-table.directive";
+import { EditRowDirective } from "./zorro/edit-row.directive";
+import { EditControlDirective } from "./zorro/edit-control.directive";
 
 //导入模块集合
 const importModules = [
@@ -62,13 +65,18 @@ const importModules = [
 
 //组件集合
 const components = [
-    MinValidator, MaxValidator, SafeUrlPipe, TruncatePipe, IsTruncatePipe,
+    SafeUrlPipe, TruncatePipe, IsTruncatePipe,
     LineWrapperComponent, ColumnWrapperComponent, BarWrapperComponent, AreaWrapperComponent,
     PieWrapperComponent, RosePieWrapperComponent,
-    Button, TextBox, DatePicker, TextArea,
+    Button, TextBox, DatePicker, TextArea, NumberTextBox,
     Select, Radio, CheckboxGroup,
-    Table, Upload,
+    Table, Upload, SingleUpload,
     Tree, TreeSelect, TreeTable
+];
+
+//指令集合
+const directives = [
+    EditTableDirective, EditRowDirective, EditControlDirective
 ];
 
 /**
@@ -80,10 +88,10 @@ const components = [
         importModules
     ],
     declarations: [
-        components
+        components, directives
     ],
     exports: [
-        components
+        components, directives
     ],
     providers: [
         DicService, Session

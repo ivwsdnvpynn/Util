@@ -39,13 +39,17 @@ export class MessageConfig {
      */
     static defaultOptionText = "-- 请选择 --";
     /**
-     * 下拉框宽度
-     */
-    static selectWidth = 150;
-    /**
      * 必填项默认验证消息
      */
     static requiredMessage = "该项必须填写";
+    /**
+     * 该项必须勾选
+     */
+    static groupRequiredMessage = "该项必须勾选";
+    /**
+     * 上传必填项默认验证消息
+     */
+    static uploadRequiredMessage = "请选择文件";
     /**
      * 最小长度默认验证消息
      */
@@ -94,6 +98,14 @@ export class MessageConfig {
      * 存在未保存的修改，确定离开?
      */
     static saveGuardConfirm = "存在未保存的修改，确定离开此页面?";
+    /**
+     * 确定保存吗?
+     */
+    static saveConfirm = "确定要保存吗?";
+    /**
+     * 没有需要保存的记录
+     */
+    static noNeedSave = "没有需要保存的记录";
     /**
      * 文件类型过滤消息
      */

@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using Util.Ui.Angular.AntDesign.Tests.XUnitHelpers;
 using Util.Ui.Configs;
 using Util.Ui.Enums;
 using Util.Ui.Zorro.Forms;
+using Util.Ui.Zorro.Grid.Configs;
+using Util.Ui.Zorro.Tables.Configs;
 using Xunit;
 using Xunit.Abstractions;
 using String = Util.Helpers.String;
@@ -33,8 +36,9 @@ namespace Util.Ui.Angular.AntDesign.Tests.Zorro.Forms {
         /// <summary>
         /// 获取结果
         /// </summary>
-        private string GetResult( TagHelperAttributeList contextAttributes = null, TagHelperAttributeList outputAttributes = null, TagHelperContent content = null ) {
-            return Helper.GetResult( _output, _component, contextAttributes, outputAttributes, content );
+        private string GetResult( TagHelperAttributeList contextAttributes = null, TagHelperAttributeList outputAttributes = null,
+            TagHelperContent content = null, IDictionary<object, object> items = null ) {
+            return Helper.GetResult( _output, _component, contextAttributes, outputAttributes, content, items );
         }
 
         /// <summary>
@@ -147,17 +151,6 @@ namespace Util.Ui.Angular.AntDesign.Tests.Zorro.Forms {
         }
 
         /// <summary>
-        /// 测试设置为数字框
-        /// </summary>
-        [Fact]
-        public void TestType_Number() {
-            var attributes = new TagHelperAttributeList { { UiConst.Type, TextBoxType.Number } };
-            var result = new String();
-            result.Append( "<x-textbox></x-textbox>" );
-            Assert.Equal( result.ToString(), GetResult( attributes ) );
-        }
-
-        /// <summary>
         /// 测试设置为多行文本框
         /// </summary>
         [Fact]
@@ -246,50 +239,6 @@ namespace Util.Ui.Angular.AntDesign.Tests.Zorro.Forms {
         }
 
         /// <summary>
-        /// 测试最小值验证
-        /// </summary>
-        [Fact]
-        public void TestMin() {
-            var attributes = new TagHelperAttributeList { { UiConst.Min, 3 } };
-            var result = new String();
-            result.Append( "<x-textbox [min]=\"3\"></x-textbox>" );
-            Assert.Equal( result.ToString(), GetResult( attributes ) );
-        }
-
-        /// <summary>
-        /// 测试最小值,添加指定错误消息
-        /// </summary>
-        [Fact]
-        public void TestMin_Message() {
-            var attributes = new TagHelperAttributeList { { UiConst.MinMessage, "a" } };
-            var result = new String();
-            result.Append( "<x-textbox minMessage=\"a\"></x-textbox>" );
-            Assert.Equal( result.ToString(), GetResult( attributes ) );
-        }
-
-        /// <summary>
-        /// 测试最大值验证
-        /// </summary>
-        [Fact]
-        public void TestMax() {
-            var attributes = new TagHelperAttributeList { { UiConst.Max, 3 } };
-            var result = new String();
-            result.Append( "<x-textbox [max]=\"3\"></x-textbox>" );
-            Assert.Equal( result.ToString(), GetResult( attributes ) );
-        }
-
-        /// <summary>
-        /// 测试最大值,添加指定错误消息
-        /// </summary>
-        [Fact]
-        public void TestMax_Message() {
-            var attributes = new TagHelperAttributeList { { UiConst.MaxMessage, "a" } };
-            var result = new String();
-            result.Append( "<x-textbox maxMessage=\"a\"></x-textbox>" );
-            Assert.Equal( result.ToString(), GetResult( attributes ) );
-        }
-
-        /// <summary>
         /// 测试正则表达式验证
         /// </summary>
         [Fact]
@@ -309,6 +258,153 @@ namespace Util.Ui.Angular.AntDesign.Tests.Zorro.Forms {
             var result = new String();
             result.Append( "<x-textbox patterMessage=\"a\"></x-textbox>" );
             Assert.Equal( result.ToString(), GetResult( attributes ) );
+        }
+
+        /// <summary>
+        /// 测试栅格跨度
+        /// </summary>
+        [Fact]
+        public void TestSpan() {
+            var attributes = new TagHelperAttributeList { { UiConst.Span, 2 } };
+            var result = new String();
+            result.Append( "<nz-form-control [nzSpan]=\"2\">" );
+            result.Append( "<x-textbox></x-textbox>" );
+            result.Append( "</nz-form-control>" );
+            Assert.Equal( result.ToString(), GetResult( attributes ) );
+        }
+
+        /// <summary>
+        /// 测试标签栅格跨度
+        /// </summary>
+        [Fact]
+        public void TestLabelSpan() {
+            var attributes = new TagHelperAttributeList { { UiConst.Span, 2 }, { UiConst.LabelSpan, 3 } };
+            var result = new String();
+            result.Append( "<nz-form-item>" );
+            result.Append( "<nz-form-label [nzSpan]=\"3\">" );
+            result.Append( "</nz-form-label>" );
+            result.Append( "<nz-form-control [nzSpan]=\"2\">" );
+            result.Append( "<x-textbox></x-textbox>" );
+            result.Append( "</nz-form-control>" );
+            result.Append( "</nz-form-item>" );
+            Assert.Equal( result.ToString(), GetResult( attributes ) );
+        }
+
+        /// <summary>
+        /// 测试显示标签
+        /// </summary>
+        [Fact]
+        public void TestShowLabel_1() {
+            var attributes = new TagHelperAttributeList { { UiConst.ShowLabel, true } };
+            var result = new String();
+            result.Append( "<nz-form-item>" );
+            result.Append( "<nz-form-label>" );
+            result.Append( "</nz-form-label>" );
+            result.Append( "<nz-form-control>" );
+            result.Append( "<x-textbox></x-textbox>" );
+            result.Append( "</nz-form-control>" );
+            result.Append( "</nz-form-item>" );
+            Assert.Equal( result.ToString(), GetResult( attributes ) );
+        }
+
+        /// <summary>
+        /// 测试显示标签 - 从父容器继承
+        /// </summary>
+        [Fact]
+        public void TestShowLabel_2() {
+            var config = new GridShareConfig { ShowLabel = true };
+            var items = new Dictionary<object, object> { { typeof( GridShareConfig ), config } };
+            var result = new String();
+            result.Append( "<nz-form-item>" );
+            result.Append( "<nz-form-label>" );
+            result.Append( "</nz-form-label>" );
+            result.Append( "<nz-form-control>" );
+            result.Append( "<x-textbox></x-textbox>" );
+            result.Append( "</nz-form-control>" );
+            result.Append( "</nz-form-item>" );
+            Assert.Equal( result.ToString(), GetResult( items: items ) );
+        }
+
+        /// <summary>
+        /// 测试显示标签 - 覆盖父容器继承的属性
+        /// </summary>
+        [Fact]
+        public void TestShowLabel_3() {
+            var config = new GridShareConfig { ShowLabel = true };
+            var items = new Dictionary<object, object> { { typeof( GridShareConfig ), config } };
+            var attributes = new TagHelperAttributeList { { UiConst.ShowLabel, false } };
+            var result = new String();
+            result.Append( "<x-textbox></x-textbox>" );
+            Assert.Equal( result.ToString(), GetResult( attributes,items: items ) );
+        }
+
+        /// <summary>
+        /// 测试浮动布局
+        /// </summary>
+        [Fact]
+        public void TestIsFlex_1() {
+            var attributes = new TagHelperAttributeList { { UiConst.Span, 2 }, { UiConst.LabelSpan, 3 }, { UiConst.IsFlex, true } };
+            var result = new String();
+            result.Append( "<nz-form-item [nzFlex]=\"true\">" );
+            result.Append( "<nz-form-label [nzSpan]=\"3\">" );
+            result.Append( "</nz-form-label>" );
+            result.Append( "<nz-form-control [nzSpan]=\"2\">" );
+            result.Append( "<x-textbox></x-textbox>" );
+            result.Append( "</nz-form-control>" );
+            result.Append( "</nz-form-item>" );
+            Assert.Equal( result.ToString(), GetResult( attributes ) );
+        }
+
+        /// <summary>
+        /// 测试浮动布局 - 从父容器继承
+        /// </summary>
+        [Fact]
+        public void TestIsFlex_2() {
+            var config = new GridShareConfig { FormItemFlex = true };
+            var items = new Dictionary<object, object> { { typeof( GridShareConfig ), config } };
+            var attributes = new TagHelperAttributeList { { UiConst.Span, 2 }, { UiConst.LabelSpan, 3 } };
+            var result = new String();
+            result.Append( "<nz-form-item [nzFlex]=\"true\">" );
+            result.Append( "<nz-form-label [nzSpan]=\"3\">" );
+            result.Append( "</nz-form-label>" );
+            result.Append( "<nz-form-control [nzSpan]=\"2\">" );
+            result.Append( "<x-textbox></x-textbox>" );
+            result.Append( "</nz-form-control>" );
+            result.Append( "</nz-form-item>" );
+            Assert.Equal( result.ToString(), GetResult( attributes, items: items ) );
+        }
+
+        /// <summary>
+        /// 测试浮动布局 - 覆盖父容器继承的属性
+        /// </summary>
+        [Fact]
+        public void TestIsFlex_3() {
+            var config = new GridShareConfig { FormItemFlex = true };
+            var items = new Dictionary<object, object> { { typeof( GridShareConfig ), config } };
+            var attributes = new TagHelperAttributeList { { UiConst.Span, 2 }, { UiConst.LabelSpan, 3 }, { UiConst.IsFlex, false } };
+            var result = new String();
+            result.Append( "<nz-form-item>" );
+            result.Append( "<nz-form-label [nzSpan]=\"3\">" );
+            result.Append( "</nz-form-label>" );
+            result.Append( "<nz-form-control [nzSpan]=\"2\">" );
+            result.Append( "<x-textbox></x-textbox>" );
+            result.Append( "</nz-form-control>" );
+            result.Append( "</nz-form-item>" );
+            Assert.Equal( result.ToString(), GetResult( attributes, items: items ) );
+        }
+
+        /// <summary>
+        /// 测试表格编辑
+        /// </summary>
+        [Fact]
+        public void TestTableEdit() {
+            var config = new ColumnShareConfig( new TableShareConfig( "id" ), "a" );
+            var items = new Dictionary<object, object> { { typeof( ColumnShareConfig ), config } };
+
+            var result = new String();
+            result.Append( "<x-textbox [row]=\"id_row\"></x-textbox>" );
+
+            Assert.Equal( result.ToString(), GetResult( items: items ) );
         }
 
         /// <summary>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 using Util.Ui.Angular.Base;
 using Util.Ui.Configs;
+using Util.Ui.Enums;
 using Util.Ui.Extensions;
 using Util.Ui.Renders;
 using Util.Ui.TagHelpers;
@@ -18,11 +19,11 @@ namespace Util.Ui.Zorro.Tables {
         /// </summary>
         public string Data { get; set; }
         /// <summary>
-        /// 基地址，基于该地址构建加载地址和删除地址，范例：传入test,则加载地址为/api/test,删除地址为/api/test/delete
+        /// 基地址，基于该地址构建加载地址和删除地址，范例：传入test,则加载地址为/api/test,删除地址为/api/test/delete,批量保存地址为/api/test/save
         /// </summary>
         public string BaseUrl { get; set; }
         /// <summary>
-        /// 基地址，基于该地址构建加载地址和删除地址，范例：传入test,则加载地址为/api/test,删除地址为/api/test/delete
+        /// 基地址，基于该地址构建加载地址和删除地址，范例：传入test,则加载地址为/api/test,删除地址为/api/test/delete,批量保存地址为/api/test/save
         /// </summary>
         public string BindBaseUrl { get; set; }
         /// <summary>
@@ -42,9 +43,21 @@ namespace Util.Ui.Zorro.Tables {
         /// </summary>
         public string BindDeleteUrl { get; set; }
         /// <summary>
+        /// 批量保存地址，范例：/api/test/save
+        /// </summary>
+        public string SaveUrl { get; set; }
+        /// <summary>
+        /// 批量保存地址，范例：/api/test/save
+        /// </summary>
+        public string BindSaveUrl { get; set; }
+        /// <summary>
         /// 查询参数
         /// </summary>
         public string QueryParam { get; set; }
+        /// <summary>
+        /// 是否多选，如果设置为false,则复选框变成单选框，默认为true
+        /// </summary>
+        public string Multiple { get; set; }
         /// <summary>
         /// 排序字段,范例: creationTime desc
         /// </summary>
@@ -54,17 +67,13 @@ namespace Util.Ui.Zorro.Tables {
         /// </summary>
         public bool ShowBorder { get; set; }
         /// <summary>
-        /// 最大高度
+        /// [nzScroll], 内容区滚动高度,用于支持固定表头，需要设置每列宽度才能让表头和内容对齐，范例：400，表示 [nzScroll]="{ y: '400px' }"
         /// </summary>
-        public double MaxHeight { get; set; }
+        public string ScrollHeight { get; set; }
         /// <summary>
-        /// 最小高度
+        /// [nzScroll], 滚动宽度,用于支持固定列，范例：400，表示 [nzScroll]="{ x: '400px' }"
         /// </summary>
-        public double MinHeight { get; set; }
-        /// <summary>
-        /// 宽度
-        /// </summary>
-        public double Width { get; set; }
+        public string ScrollWidth { get; set; }
         /// <summary>
         /// 初始化时是否自动加载数据，默认为true,设置成false则手工加载
         /// </summary>
@@ -73,6 +82,10 @@ namespace Util.Ui.Zorro.Tables {
         /// [nzFrontPagination],是否在前端进行分页，默认为 false
         /// </summary>
         public bool FrontPage { get; set; }
+        /// <summary>
+        /// [nzShowPagination],是否显示分页
+        /// </summary>
+        public bool ShowPagination { get; set; }
         /// <summary>
         /// [nzShowSizeChanger],是否显示分页大小下拉框，默认为 true
         /// </summary>
@@ -94,6 +107,22 @@ namespace Util.Ui.Zorro.Tables {
         /// </summary>
         public string PageSizeOptions { get; set; }
         /// <summary>
+        /// 选中的标识列表，用于还原选中的复选框，可以是单个Id，或Id数组，范例：'1' 或 ['1','2']
+        /// </summary>
+        public string CheckedKeys { get; set; }
+        /// <summary>
+        /// 双击启动行编辑模式，仅影响首次进入编辑模式，默认值：true，设置成false，则首次进入编辑模式使用单击
+        /// </summary>
+        public bool DoubleClickStartEdit { get; set; }
+        /// <summary>
+        /// nzSize,表格尺寸，默认为 default
+        /// </summary>
+        public TableSize Size { get; set; }
+        /// <summary>
+        /// 选中行的背景色，范例：selected-row-background-color="'red'"
+        /// </summary>
+        public string SelectedRowBackgroundColor { get; set; }
+        /// <summary>
         /// (nzPageSizeChange),分页大小变更事件
         /// </summary>
         public string OnPageSizeChange { get; set; }
@@ -105,6 +134,10 @@ namespace Util.Ui.Zorro.Tables {
         /// 数据加载完成后事件
         /// </summary>
         public string OnLoad { get; set; }
+        /// <summary>
+        /// 行单击事件，使用 row 访问行对象，范例：on-click-row="click(row)"
+        /// </summary>
+        public string OnClickRow { get; set; }
 
         /// <summary>
         /// 获取渲染器
@@ -118,19 +151,21 @@ namespace Util.Ui.Zorro.Tables {
         /// <summary>
         /// 处理前操作
         /// </summary>
-        /// <param name="context">TagHelper上下文</param>
-        /// <param name="output">TagHelper输出</param>
-        protected override void ProcessBefore( TagHelperContext context, TagHelperOutput output ) {
-            InitShare( context );
+        /// <param name="context">上下文</param>
+        protected override void ProcessBefore( Context context ) {
+            InitShare( context.TagHelperContext );
         }
 
         /// <summary>
         /// 初始化共享实例
         /// </summary>
         public void InitShare( TagHelperContext context ) {
-            var shareConfig = new TableShareConfig( GetId( context ) );
+            var shareConfig = context.GetValueFromItems<TableShareConfig>();
+            if ( shareConfig == null ) {
+                shareConfig = new TableShareConfig( GetId( context ) );
+                context.SetValueToItems( shareConfig );
+            }
             InitShareConfig( context, shareConfig );
-            context.SetValueToItems( TableConfig.TableShareKey, shareConfig );
         }
 
         /// <summary>
@@ -146,6 +181,7 @@ namespace Util.Ui.Zorro.Tables {
         /// 初始化共享配置
         /// </summary>
         protected virtual void InitShareConfig( TagHelperContext context, TableShareConfig config ) {
+            config.OnClickRow = context.GetValueFromAttributes<string>( UiConst.OnClickRow );
         }
     }
 }

@@ -43,6 +43,7 @@ namespace Util.Ui.Angular.AntDesign.Tests.Zorro.TreeTables {
         /// </summary>
         private void AppendTableHtml( String result ) {
             result.Append( "<nz-table #m_id=\"\" (nzPageIndexChange)=\"m_id_wrapper.pageIndexChange($event)\" (nzPageSizeChange)=\"m_id_wrapper.pageSizeChange($event)\" " );
+            result.Append( "[(nzPageIndex)]=\"m_id_wrapper.queryParam.page\" [(nzPageSize)]=\"m_id_wrapper.queryParam.pageSize\" " );
             result.Append( "[nzData]=\"m_id_wrapper.dataSource\" [nzFrontPagination]=\"false\" [nzLoading]=\"m_id_wrapper.loading\" [nzShowPagination]=\"m_id_wrapper.showPagination\" " );
             result.Append( "[nzShowQuickJumper]=\"true\" [nzShowSizeChanger]=\"true\" [nzShowTotal]=\"template_m_id\" [nzTotal]=\"m_id_wrapper.totalCount\">" );
             AppendTableBodyHtml( result );
@@ -85,6 +86,7 @@ namespace Util.Ui.Angular.AntDesign.Tests.Zorro.TreeTables {
             var result = new String();
             result.Append( "<nz-tree-table-wrapper #a_wrapper=\"\">" );
             result.Append( "<nz-table #a=\"\" (nzPageIndexChange)=\"a_wrapper.pageIndexChange($event)\" (nzPageSizeChange)=\"a_wrapper.pageSizeChange($event)\" " );
+            result.Append( "[(nzPageIndex)]=\"a_wrapper.queryParam.page\" [(nzPageSize)]=\"a_wrapper.queryParam.pageSize\" " );
             result.Append( "[nzData]=\"a_wrapper.dataSource\" [nzFrontPagination]=\"false\" [nzLoading]=\"a_wrapper.loading\" [nzShowPagination]=\"a_wrapper.showPagination\" " );
             result.Append( "[nzShowQuickJumper]=\"true\" [nzShowSizeChanger]=\"true\" [nzShowTotal]=\"template_a\" [nzTotal]=\"a_wrapper.totalCount\">" );
             result.Append( "<tbody>" );
@@ -186,6 +188,18 @@ namespace Util.Ui.Angular.AntDesign.Tests.Zorro.TreeTables {
         }
 
         /// <summary>
+        /// 测试复选框选中的标识列表
+        /// </summary>
+        [Fact]
+        public void TestCheckedKeys() {
+            var attributes = new TagHelperAttributeList { { UiConst.CheckedKeys, "a" } };
+            var result = new String();
+            result.Append( "<nz-tree-table-wrapper #m_id_wrapper=\"\" [checkedKeys]=\"a\">" );
+            AppendTableHtml( result );
+            Assert.Equal( result.ToString(), GetResult( attributes ) );
+        }
+
+        /// <summary>
         /// 测试显示边框
         /// </summary>
         [Fact]
@@ -194,7 +208,8 @@ namespace Util.Ui.Angular.AntDesign.Tests.Zorro.TreeTables {
             var result = new String();
             result.Append( "<nz-tree-table-wrapper #m_id_wrapper=\"\">" );
             result.Append( "<nz-table #m_id=\"\" (nzPageIndexChange)=\"m_id_wrapper.pageIndexChange($event)\" (nzPageSizeChange)=\"m_id_wrapper.pageSizeChange($event)\" " );
-            result.Append( "nzBordered=\"true\" [nzData]=\"m_id_wrapper.dataSource\" [nzFrontPagination]=\"false\" [nzLoading]=\"m_id_wrapper.loading\" [nzShowPagination]=\"m_id_wrapper.showPagination\" " );
+            result.Append( "nzBordered=\"true\" [(nzPageIndex)]=\"m_id_wrapper.queryParam.page\" [(nzPageSize)]=\"m_id_wrapper.queryParam.pageSize\" " );
+            result.Append( "[nzData]=\"m_id_wrapper.dataSource\" [nzFrontPagination]=\"false\" [nzLoading]=\"m_id_wrapper.loading\" [nzShowPagination]=\"m_id_wrapper.showPagination\" " );
             result.Append( "[nzShowQuickJumper]=\"true\" [nzShowSizeChanger]=\"true\" [nzShowTotal]=\"template_m_id\" [nzTotal]=\"m_id_wrapper.totalCount\">" );
             AppendTableBodyHtml(result);
             Assert.Equal( result.ToString(), GetResult( attributes ) );
@@ -220,6 +235,30 @@ namespace Util.Ui.Angular.AntDesign.Tests.Zorro.TreeTables {
             var attributes = new TagHelperAttributeList { { UiConst.ShowCheckbox, false } };
             var result = new String();
             result.Append( "<nz-tree-table-wrapper #m_id_wrapper=\"\" [showCheckbox]=\"false\">" );
+            AppendTableHtml( result );
+            Assert.Equal( result.ToString(), GetResult( attributes ) );
+        }
+
+        /// <summary>
+        /// 测试多选
+        /// </summary>
+        [Fact]
+        public void TestMultiple() {
+            var attributes = new TagHelperAttributeList { { UiConst.Multiple, "a" } };
+            var result = new String();
+            result.Append( "<nz-tree-table-wrapper #m_id_wrapper=\"\" [multiple]=\"a\">" );
+            AppendTableHtml( result );
+            Assert.Equal( result.ToString(), GetResult( attributes ) );
+        }
+
+        /// <summary>
+        /// 测试选择叶节点 
+        /// </summary>
+        [Fact]
+        public void TestCheckLeafOnly() {
+            var attributes = new TagHelperAttributeList { { UiConst.CheckLeafOnly, "a" } };
+            var result = new String();
+            result.Append( "<nz-tree-table-wrapper #m_id_wrapper=\"\" [checkLeafOnly]=\"a\">" );
             AppendTableHtml( result );
             Assert.Equal( result.ToString(), GetResult( attributes ) );
         }
@@ -257,6 +296,7 @@ namespace Util.Ui.Angular.AntDesign.Tests.Zorro.TreeTables {
             var result = new String();
             result.Append( "<nz-tree-table-wrapper #m_id_wrapper=\"\">" );
             result.Append( "<nz-table #m_id=\"\" (nzPageIndexChange)=\"m_id_wrapper.pageIndexChange($event)\" (nzPageSizeChange)=\"m_id_wrapper.pageSizeChange($event)\" " );
+            result.Append( "[(nzPageIndex)]=\"m_id_wrapper.queryParam.page\" [(nzPageSize)]=\"m_id_wrapper.queryParam.pageSize\" " );
             result.Append( "[nzData]=\"m_id_wrapper.dataSource\" [nzFrontPagination]=\"true\" [nzLoading]=\"m_id_wrapper.loading\" [nzShowPagination]=\"m_id_wrapper.showPagination\" " );
             result.Append( "[nzShowQuickJumper]=\"true\" [nzShowSizeChanger]=\"true\" [nzShowTotal]=\"template_m_id\" [nzTotal]=\"m_id_wrapper.totalCount\">" );
             AppendTableBodyHtml( result );
@@ -272,6 +312,7 @@ namespace Util.Ui.Angular.AntDesign.Tests.Zorro.TreeTables {
             var result = new String();
             result.Append( "<nz-tree-table-wrapper #m_id_wrapper=\"\">" );
             result.Append( "<nz-table #m_id=\"\" (nzPageIndexChange)=\"m_id_wrapper.pageIndexChange($event)\" (nzPageSizeChange)=\"m_id_wrapper.pageSizeChange($event)\" " );
+            result.Append( "[(nzPageIndex)]=\"m_id_wrapper.queryParam.page\" [(nzPageSize)]=\"m_id_wrapper.queryParam.pageSize\" " );
             result.Append( "[nzData]=\"m_id_wrapper.dataSource\" [nzFrontPagination]=\"false\" [nzLoading]=\"m_id_wrapper.loading\" [nzShowPagination]=\"m_id_wrapper.showPagination\" " );
             result.Append( "[nzShowQuickJumper]=\"true\" [nzShowSizeChanger]=\"false\" [nzShowTotal]=\"template_m_id\" [nzTotal]=\"m_id_wrapper.totalCount\">" );
             AppendTableBodyHtml( result );
@@ -287,6 +328,7 @@ namespace Util.Ui.Angular.AntDesign.Tests.Zorro.TreeTables {
             var result = new String();
             result.Append( "<nz-tree-table-wrapper #m_id_wrapper=\"\">" );
             result.Append( "<nz-table #m_id=\"\" (nzPageIndexChange)=\"m_id_wrapper.pageIndexChange($event)\" (nzPageSizeChange)=\"a\" " );
+            result.Append( "[(nzPageIndex)]=\"m_id_wrapper.queryParam.page\" [(nzPageSize)]=\"m_id_wrapper.queryParam.pageSize\" " );
             result.Append( "[nzData]=\"m_id_wrapper.dataSource\" [nzFrontPagination]=\"false\" [nzLoading]=\"m_id_wrapper.loading\" [nzShowPagination]=\"m_id_wrapper.showPagination\" " );
             result.Append( "[nzShowQuickJumper]=\"true\" [nzShowSizeChanger]=\"true\" [nzShowTotal]=\"template_m_id\" [nzTotal]=\"m_id_wrapper.totalCount\">" );
             AppendTableBodyHtml( result );
@@ -302,6 +344,7 @@ namespace Util.Ui.Angular.AntDesign.Tests.Zorro.TreeTables {
             var result = new String();
             result.Append( "<nz-tree-table-wrapper #m_id_wrapper=\"\">" );
             result.Append( "<nz-table #m_id=\"\" (nzPageIndexChange)=\"a\" (nzPageSizeChange)=\"m_id_wrapper.pageSizeChange($event)\" " );
+            result.Append( "[(nzPageIndex)]=\"m_id_wrapper.queryParam.page\" [(nzPageSize)]=\"m_id_wrapper.queryParam.pageSize\" " );
             result.Append( "[nzData]=\"m_id_wrapper.dataSource\" [nzFrontPagination]=\"false\" [nzLoading]=\"m_id_wrapper.loading\" [nzShowPagination]=\"m_id_wrapper.showPagination\" " );
             result.Append( "[nzShowQuickJumper]=\"true\" [nzShowSizeChanger]=\"true\" [nzShowTotal]=\"template_m_id\" [nzTotal]=\"m_id_wrapper.totalCount\">" );
             AppendTableBodyHtml( result );
@@ -317,6 +360,7 @@ namespace Util.Ui.Angular.AntDesign.Tests.Zorro.TreeTables {
             var result = new String();
             result.Append( "<nz-tree-table-wrapper #m_id_wrapper=\"\" (onExpand)=\"a\">" );
             result.Append( "<nz-table #m_id=\"\" (nzPageIndexChange)=\"m_id_wrapper.pageIndexChange($event)\" (nzPageSizeChange)=\"m_id_wrapper.pageSizeChange($event)\" " );
+            result.Append( "[(nzPageIndex)]=\"m_id_wrapper.queryParam.page\" [(nzPageSize)]=\"m_id_wrapper.queryParam.pageSize\" " );
             result.Append( "[nzData]=\"m_id_wrapper.dataSource\" [nzFrontPagination]=\"false\" [nzLoading]=\"m_id_wrapper.loading\" [nzShowPagination]=\"m_id_wrapper.showPagination\" " );
             result.Append( "[nzShowQuickJumper]=\"true\" [nzShowSizeChanger]=\"true\" [nzShowTotal]=\"template_m_id\" [nzTotal]=\"m_id_wrapper.totalCount\">" );
             AppendTableBodyHtml( result );

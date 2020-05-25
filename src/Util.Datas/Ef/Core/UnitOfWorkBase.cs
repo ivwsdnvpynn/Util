@@ -27,7 +27,7 @@ namespace Util.Datas.Ef.Core {
     /// <summary>
     /// 工作单元
     /// </summary>
-    public abstract class UnitOfWorkBase : DbContext, IUnitOfWork, IDatabase, IEntityMatedata {
+    public abstract partial class UnitOfWorkBase : DbContext, IUnitOfWork, IDatabase, IEntityMatedata {
 
         #region 字段
 
@@ -68,7 +68,7 @@ namespace Util.Datas.Ef.Core {
         protected UnitOfWorkBase( DbContextOptions options, IServiceProvider serviceProvider )
             : base( options ) {
             TraceId = Guid.NewGuid().ToString();
-            Session = Util.Security.Sessions.Session.Instance;
+            Session = Sessions.Session.Instance;
             _serviceProvider = serviceProvider ?? Ioc.Create<IServiceProvider>();
             RegisterToManager();
         }
@@ -187,7 +187,9 @@ namespace Util.Datas.Ef.Core {
         /// <summary>
         /// 获取映射接口类型
         /// </summary>
-        protected abstract Type GetMapType();
+        protected virtual Type GetMapType() {
+            return this.GetType();
+        }
 
         /// <summary>
         /// 从程序集获取映射配置列表
@@ -295,8 +297,6 @@ namespace Util.Datas.Ef.Core {
         /// 初始化创建审计信息
         /// </summary>
         private void InitCreationAudited( EntityEntry entry ) {
-            if ( GetUserId().IsEmpty() )
-                return;
             CreationAuditedInitializer.Init( entry.Entity, GetUserId(), GetUserName() );
         }
 
@@ -326,8 +326,6 @@ namespace Util.Datas.Ef.Core {
         /// 初始化修改审计信息
         /// </summary>
         private void InitModificationAudited( EntityEntry entry ) {
-            if( GetUserId().IsEmpty() )
-                return;
             ModificationAuditedInitializer.Init( entry.Entity, GetUserId(), GetUserName() );
         }
 

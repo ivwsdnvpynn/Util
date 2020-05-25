@@ -10,7 +10,6 @@ using Util.Samples.Domain.Repositories;
 using Util.Samples.Service.Abstractions.Systems;
 using Util.Samples.Service.Dtos.Systems;
 using Util.Samples.Service.Queries.Systems;
-using Util.Security.Properties;
 
 namespace Util.Samples.Service.Implements.Systems {
     /// <summary>
@@ -68,6 +67,7 @@ namespace Util.Samples.Service.Implements.Systems {
                 .From<Application>( "a" )
                 .WhereIfNotEmpty<Application>( t => t.Code.Contains( query.Code ) )
                 .WhereIfNotEmpty<Application>( t => t.Name.Contains( query.Name ) )
+                .WhereIfNotEmpty<Application>( t => t.Comment.Contains( query.Comment ) )
                 .OrIfNotEmpty<Application>( t => t.Code.Contains( query.Keyword ), t => t.Name.Contains( query.Keyword ) )
                 .ToPagerListAsync<ApplicationDto>( query );
         }
@@ -87,14 +87,14 @@ namespace Util.Samples.Service.Implements.Systems {
         /// 抛出编码重复异常
         /// </summary>
         private void ThrowCodeRepeatException( string code ) {
-            throw new Warning( string.Format( SecurityResource.DuplicateApplicationCode, code ) );
+            throw new Warning( $"应用程序编码 {code} 已存在" );
         }
 
         /// <summary>
         /// 抛出名称重复异常
         /// </summary>
         private void ThrowNameRepeatException( string name ) {
-            throw new Warning( string.Format( SecurityResource.DuplicateApplicationName, name ) );
+            throw new Warning( $"应用程序名称 {name} 已存在" );
         }
 
         /// <summary>

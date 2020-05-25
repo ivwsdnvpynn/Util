@@ -2,7 +2,7 @@
 //Copyright 2019 何镇汐
 //Licensed under the MIT license
 //=====================================================
-import { Component, Input, Output, EventEmitter, Host, Optional, ContentChild, TemplateRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, Optional, ContentChild, TemplateRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Util } from "../util";
 import { MessageConfig } from '../config/message-config';
@@ -69,13 +69,13 @@ export class Button {
     /**
      * 模板，用来支持图标
      */
-    @ContentChild( TemplateRef ) template: TemplateRef<any>;
+    @ContentChild( TemplateRef, { "static": false } ) template: TemplateRef<any>;
 
     /**
      * 初始化按钮包装器
      * @param form 表单
      */
-    constructor( @Optional() @Host() private form: NgForm ) {
+    constructor( @Optional() private form: NgForm ) {
     }
 
     /**
